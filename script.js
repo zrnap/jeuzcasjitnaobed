@@ -5,13 +5,15 @@ function updateTitle() {
 
     const remainingMinutes = calculateRemainingMinutes(hours, minutes);
     const formattedTime = formatTime(hours, minutes);
+    const remainingText = getRemainingText(remainingMinutes);
 
     const titleElement = document.getElementById("timeDisplay");
 
     if (remainingMinutes > 0) {
-        titleElement.textContent = `ještě ${remainingMinutes} minut`;
+        const remainingFormatted = formatRemainingTime(remainingMinutes);
+        titleElement.textContent = `Ještě ${remainingFormatted}`;
     } else {
-        titleElement.textContent = `ANO! lepší čas než ${formattedTime} na oběd nenajdeš`;
+        titleElement.textContent = `Ano! Lepší čas než ${formattedTime} na oběd nenajdeš`;
     }
 }
 
@@ -32,6 +34,47 @@ function formatTime(hours, minutes) {
     const formattedHours = hours < 10 ? `0${hours}` : hours;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     return `${formattedHours}:${formattedMinutes}`;
+}
+
+function getRemainingText(remainingMinutes) {
+    if (remainingMinutes === 1) {
+        return "minuta";
+    } else if (remainingMinutes > 1 && remainingMinutes < 5) {
+        return "minuty";
+    } else {
+        return "minut";
+    }
+}
+
+function formatRemainingTime(remainingMinutes) {
+    if (remainingMinutes >= 60) {
+        const hours = Math.floor(remainingMinutes / 60);
+        const minutes = remainingMinutes % 60;
+        let hoursText = "hodin";
+        let minutesText = "minut";
+
+        if (hours === 1) {
+            hoursText = "hodina";
+        } else if (hours > 1 && hours < 5) {
+            hoursText = "hodiny";
+        }
+
+        if (minutes === 1) {
+            minutesText = "minuta";
+        } else if (minutes > 1 && minutes < 5) {
+            minutesText = "minuty";
+        }
+
+        if (hours > 0 && minutes > 0) {
+            return `${hours} ${hoursText} a ${minutes} ${minutesText}`;
+        } else if (hours > 0) {
+            return `${hours} ${hoursText}`;
+        } else if (minutes > 0) {
+            return `${minutes} ${minutesText}`;
+        }
+    } else {
+        return `${remainingMinutes} minut`;
+    }
 }
 
 // Call the updateTitle function initially
