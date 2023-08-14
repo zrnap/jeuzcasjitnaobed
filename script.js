@@ -1,39 +1,32 @@
 function updateTitle() {
     const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-
-    const remainingMinutes = calculateRemainingMinutes(hours, minutes);
-    const formattedTime = formatTime(hours, minutes);
+    const remainingMinutes = calculateRemainingMinutes(currentTime);
+    const formattedTime = formatTime(currentTime);
     const remainingText = getRemainingText(remainingMinutes);
 
     const titleElement = document.getElementById("timeDisplay");
-
-    if (remainingMinutes > 0) {
-        const remainingFormatted = formatRemainingTime(remainingMinutes);
-        titleElement.textContent = `Ještě ${remainingFormatted}`;
-    } else {
-        titleElement.textContent = `Ano! Lepší čas než ${formattedTime} na oběd nenajdeš`;
-    }
+    
+    titleElement.textContent = remainingMinutes > 0
+        ? `Ještě ${formatRemainingTime(remainingMinutes)}`
+        : `Ano! Lepší čas než ${formattedTime} na oběd nenajdeš`;
 }
 
-function calculateRemainingMinutes(hours, minutes) {
-    const targetHours = 12;
-    const targetMinutes = 30;
+function calculateRemainingMinutes(currentTime) {
+    const targetTime = new Date(currentTime);
+    targetTime.setHours(12);
+    targetTime.setMinutes(30);
 
-    let remainingMinutes = (targetHours - hours) * 60 + (targetMinutes - minutes);
+    let remainingMinutes = (targetTime - currentTime) / 60000;
 
     if (remainingMinutes < 0) {
         remainingMinutes += 24 * 60; // Add 24 hours worth of minutes to handle cases past 12:30 of the next day
     }
 
-    return remainingMinutes;
+    return Math.floor(remainingMinutes);
 }
 
-function formatTime(hours, minutes) {
-    const formattedHours = hours < 10 ? `0${hours}` : hours;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `${formattedHours}:${formattedMinutes}`;
+function formatTime(time) {
+    return time.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" });
 }
 
 function getRemainingText(remainingMinutes) {
@@ -50,28 +43,9 @@ function formatRemainingTime(remainingMinutes) {
     if (remainingMinutes >= 60) {
         const hours = Math.floor(remainingMinutes / 60);
         const minutes = remainingMinutes % 60;
-        let hoursText = "hodin";
-        let minutesText = "minut";
-
-        if (hours === 1) {
-            hoursText = "hodina";
-        } else if (hours > 1 && hours < 5) {
-            hoursText = "hodiny";
-        }
-
-        if (minutes === 1) {
-            minutesText = "minuta";
-        } else if (minutes > 1 && minutes < 5) {
-            minutesText = "minuty";
-        }
-
-        if (hours > 0 && minutes > 0) {
-            return `${hours} ${hoursText} a ${minutes} ${minutesText}`;
-        } else if (hours > 0) {
-            return `${hours} ${hoursText}`;
-        } else if (minutes > 0) {
-            return `${minutes} ${minutesText}`;
-        }
+        const hoursText = hours === 1 ? "hodina" : hours > 1 && hours < 5 ? "hodiny" : "hodin";
+        const minutesText = minutes === 1 ? "minuta" : minutes > 1 && minutes < 5 ? "minuty" : "minut";
+        return `${hours} ${hoursText} a ${minutes} ${minutesText}`;
     } else {
         return `${remainingMinutes} minut`;
     }
