@@ -29,7 +29,7 @@ function formatTime(time) {
 }
 
 function getRemainingText(remaining) {
-    return remaining === 1 ? "minuta" : getRemainingText(remaining, "minuta", "minuty", "minut");
+    return remaining === 1 ? "minuta" : (remaining > 1 && remaining < 5) ? "minuty" : "minut";
 }
 
 function formatRemainingTime(remainingMinutes) {
@@ -37,7 +37,7 @@ function formatRemainingTime(remainingMinutes) {
         const hours = Math.floor(remainingMinutes / 60);
         const minutes = remainingMinutes % 60;
         const hoursText = getRemainingText(hours, "hodina", "hodiny", "hodin");
-        const minutesText = getRemainingText(minutes, "minuta", "minuty", "minut");
+        const minutesText = getRemainingText(minutes);
         return `${hours} ${hoursText} a ${minutes} ${minutesText}`;
     } else {
         return `${remainingMinutes} minut${getRemainingText(remainingMinutes)}`;
