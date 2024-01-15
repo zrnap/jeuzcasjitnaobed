@@ -2,7 +2,6 @@ function updateTitle() {
     const currentTime = new Date();
     const remainingMinutes = calculateRemainingMinutes(currentTime);
     const formattedTime = formatTime(currentTime);
-    const remainingText = getRemainingText(remainingMinutes);
 
     const titleElement = document.getElementById("timeDisplay");
     
@@ -29,25 +28,19 @@ function formatTime(time) {
     return time.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" });
 }
 
-function getRemainingText(remainingMinutes) {
-    if (remainingMinutes === 1) {
-        return "minuta";
-    } else if (remainingMinutes > 1 && remainingMinutes < 5) {
-        return "minuty";
-    } else {
-        return "minut";
-    }
+function getRemainingText(remaining) {
+    return remaining === 1 ? "minuta" : getRemainingText(remaining, "minuta", "minuty", "minut");
 }
 
 function formatRemainingTime(remainingMinutes) {
     if (remainingMinutes >= 60) {
         const hours = Math.floor(remainingMinutes / 60);
         const minutes = remainingMinutes % 60;
-        const hoursText = hours === 1 ? "hodina" : hours > 1 && hours < 5 ? "hodiny" : "hodin";
-        const minutesText = minutes === 1 ? "minuta" : minutes > 1 && minutes < 5 ? "minuty" : "minut";
+        const hoursText = getRemainingText(hours, "hodina", "hodiny", "hodin");
+        const minutesText = getRemainingText(minutes, "minuta", "minuty", "minut");
         return `${hours} ${hoursText} a ${minutes} ${minutesText}`;
     } else {
-        return `${remainingMinutes} minut`;
+        return `${remainingMinutes} minut${getRemainingText(remainingMinutes)}`;
     }
 }
 
@@ -55,4 +48,4 @@ function formatRemainingTime(remainingMinutes) {
 updateTitle();
 
 // Update the title every minute
-setInterval(updateTitle, 10000); // 60000 milliseconds = 1 minute
+setInterval(updateTitle, 60000);
