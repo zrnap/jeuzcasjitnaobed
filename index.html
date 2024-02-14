@@ -1,13 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Je už čas jít na oběd?</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Timer</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 100px;
+    }
+
+    .timer-container {
+      margin: auto;
+    }
+
+    #timer {
+      font-size: 2em;
+    }
+
+    #message {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-    <h1 id="timeDisplay">Welcome!</h1>
-    <script src="script.js"></script>
+  <div class="timer-container">
+    <h1 id="timer"></h1>
+    <p id="message"></p>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const targetTime = new Date();
+      targetTime.setHours(12, 30, 0, 0);
+
+      function updateTimer() {
+        const currentTime = new Date();
+        const timeDifference = targetTime - currentTime;
+
+        if (timeDifference <= 0) {
+          document.getElementById("timer").innerHTML = "00:00:00";
+          document.getElementById("message").innerHTML = "Ano! Lepší čas než 12:30 na oběd nenajdeš";
+        } else {
+          const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+          const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+          document.getElementById("timer").innerHTML = formattedTime;
+        }
+      }
+
+      setInterval(updateTimer, 1000);
+      updateTimer();
+    });
+  </script>
 </body>
 </html>
